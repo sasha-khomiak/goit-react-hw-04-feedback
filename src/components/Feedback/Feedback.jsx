@@ -21,7 +21,7 @@ class Feedback extends React.Component {
 
   // перевірка проп тайпів
   // не зрозумів як прописувать виніс в кінець
-  // static propTyprs = {};
+  static propTyprs = {};
 
   // поточне значення state
   state = {
