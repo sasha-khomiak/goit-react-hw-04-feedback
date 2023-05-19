@@ -1,6 +1,9 @@
+// бібліотеки
 import React from 'react';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 
+//стилізація
 import { Container } from './Feedback.styled';
 
 // підключення компонентів
@@ -10,116 +13,51 @@ import Section from './Section/Section';
 import Notification from './Notification/Notification';
 import PersentageLine from './PersentageLine/PersentageLine';
 
-// створення компоненту-класу Feedback
-class Feedback extends React.Component {
-  // значнен за замовчанням, якщо від пропсів нічого не прийде
-  static defaultProps = {
-    initialValueGood: 0,
-    initialValueNeutral: 0,
-    initialValueBad: 0,
-  };
+// компоненти на хуках
+export const Feedback = props => {
+  const [good, setGood] = useState(props.initialValueGood ?? 0);
+  const [neutral, setNeutral] = useState(props.initialValueNeutral ?? 0);
+  const [bad, setBad] = useState(props.initialValueBad ?? 0);
 
-  // перевірка проп тайпів
-  // не зрозумів як прописувать виніс в кінець
-  static propTyprs = {};
-
-  // поточне значення state
-  state = {
-    good: this.props.initialValueGood,
-    neutral: this.props.initialValueNeutral,
-    bad: this.props.initialValueBad,
-  };
-
-  // ф-ія обробник натискання кнопки. дивимося  яке value у currentTarget
-  // і викликаємо відповідну функцію інкременту
-  handleClick = e => {
-    let { value } = e.currentTarget;
-
-    if (value === 'good') {
-      this.incrementGood();
-    }
-
-    if (value === 'neutral') {
-      this.incrementNeutral();
-    }
-
-    if (value === 'bad') {
-      this.incrementBad();
+  //обробник натискання кнопки
+  const handleClick = event => {
+    switch (event.currentTarget.value) {
+      case 'good':
+        setGood(good + 1);
+        break;
+      case 'neutral':
+        setNeutral(neutral + 1);
+        break;
+      case 'bad':
+        setBad(bad + 1);
+        break;
+      default:
+        break;
     }
   };
 
-  // інкремент Good
-  incrementGood = () => {
-    this.setState(pevstate => {
-      return { good: pevstate.good + 1 };
-    });
-  };
-
-  // інкремент Neutral
-  incrementNeutral = () => {
-    this.setState(prevstate => {
-      return { neutral: prevstate.neutral + 1 };
-    });
-  };
-
-  // інкремент Bad
-  incrementBad = () => {
-    this.setState(prevstate => {
-      return { bad: prevstate.bad + 1 };
-    });
-  };
-
-  // розрахунок загальної кількості голосів
-  countTotalFeedback = () => {
-    return this.state.bad + this.state.neutral + this.state.good;
-  };
-
-  // розрахунок відсотку позитивних відгуків
-  countPositiveFeedbackPercentage = () => {
-    let percentage = 0;
-    if (this.countTotalFeedback() !== 0) {
-      percentage = Number.parseInt(
-        (this.state.good / this.countTotalFeedback()) * 100
-      );
-    }
-    return percentage;
-  };
-
-  // Рендеринг Container, який містить весь компонент фідбек
-  render() {
-    return (
-      <Container>
-        <Section title="Please leave feedback">
-          <FeedbackOptions
-            options={['good', 'neutral', 'bad']}
-            onLeaveFeedback={this.handleClick}
-          />
-        </Section>
-
-        <Section title="Statistics">
-          {this.countTotalFeedback() > 0 ? (
-            <>
-              <Statistics
-                good={this.state.good}
-                neutral={this.state.neutral}
-                bad={this.state.bad}
-                total={this.countTotalFeedback()}
-                positivePercentage={this.countPositiveFeedbackPercentage()}
-              />
-              <PersentageLine
-                good={this.state.good}
-                neutral={this.state.neutral}
-                bad={this.state.bad}
-              />
-            </>
-          ) : (
-            <Notification message="There is no feedback" />
-          )}
-        </Section>
-      </Container>
-    );
-  }
-}
+  //верстка елементів
+  return (
+    <Container>
+      <Section title="Please leave feedback">
+        <FeedbackOptions
+          options={['good', 'neutral', 'bad']}
+          onLeaveFeedback={handleClick}
+        />
+      </Section>
+      <Section title="Statistics">
+        {good + neutral + bad > 0 ? (
+          <>
+            <Statistics good={good} neutral={neutral} bad={bad} />
+            <PersentageLine good={good} neutral={neutral} bad={bad} />
+          </>
+        ) : (
+          <Notification message="There is no feedback" />
+        )}
+      </Section>
+    </Container>
+  );
+};
 
 // експорт компоненту Feedback, який вставимо, як окремий компонент в App
 export default Feedback;
