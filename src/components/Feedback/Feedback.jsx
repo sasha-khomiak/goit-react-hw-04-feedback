@@ -13,11 +13,16 @@ import Section from './Section/Section';
 import Notification from './Notification/Notification';
 import PersentageLine from './PersentageLine/PersentageLine';
 
-// компоненти на хуках
+// компонент на хуках
 export const Feedback = props => {
+  // стейти на хуках
   const [good, setGood] = useState(props.initialValueGood ?? 0);
   const [neutral, setNeutral] = useState(props.initialValueNeutral ?? 0);
   const [bad, setBad] = useState(props.initialValueBad ?? 0);
+
+  // вираховувані дані
+  let total = good + neutral + bad;
+  let positivePercentage = Number.parseInt((good / total) * 100);
 
   //обробник натискання кнопки
   const handleClick = event => {
@@ -32,7 +37,7 @@ export const Feedback = props => {
         setBad(bad + 1);
         break;
       default:
-        break;
+        return;
     }
   };
 
@@ -48,7 +53,13 @@ export const Feedback = props => {
       <Section title="Statistics">
         {good + neutral + bad > 0 ? (
           <>
-            <Statistics good={good} neutral={neutral} bad={bad} />
+            <Statistics
+              good={good}
+              neutral={neutral}
+              bad={bad}
+              total={total}
+              positivePercentage={positivePercentage}
+            />
             <PersentageLine good={good} neutral={neutral} bad={bad} />
           </>
         ) : (

@@ -3,11 +3,7 @@ import PropTypes from 'prop-types';
 
 import { StatisticsWrap, Colum, Option, Result } from './Statistics.styled';
 
-const Statistics = ({ good, neutral, bad }) => {
-  let total = good + neutral + bad;
-
-  let positivePercentage = Number.parseInt((good / total) * 100);
-
+const Statistics = ({ good, neutral, bad, total, positivePercentage }) => {
   return (
     <StatisticsWrap>
       <Colum>
@@ -36,4 +32,6 @@ Statistics.propTypes = {
   good: PropTypes.number.isRequired,
   neutral: PropTypes.number.isRequired,
   bad: PropTypes.number.isRequired,
+  total: PropTypes.number.isRequired,
+  positivePercentage: PropTypes.number.isRequired,
 };
